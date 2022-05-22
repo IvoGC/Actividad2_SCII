@@ -1,11 +1,11 @@
 clc; clear ; close all
 %{
 ---------------------------------------------------------------------------
-Implementar un sistema en variables de estado que controle el ángulo del 
-motor, para consignas de pi/2 y –pi/2 cambiando cada 300 mili segundos y 
-que el TL de 1,15 10-3 aparece sólo para pi/2, para –pi/2 es nulo. 
-Hallar el valor de integración Euler adecuado. El objetivo es mejorar 
-la dinámica del controlador que muestra la Fig. 1. 
+Implementar un sistema en variables de estado que controle el Ã¡ngulo del 
+motor, para consignas de pi/2 y â€“pi/2 cambiando cada 300 mili segundos y 
+que el TL de 1,15 10-3 aparece sÃ³lo para pi/2, para â€“pi/2 es nulo. 
+Hallar el valor de integraciÃ³n Euler adecuado. El objetivo es mejorar 
+la dinÃ¡mica del controlador que muestra la Fig. 1. 
 ---------------------------------------------------------------------------
 %}
 %DEFINO PARAMETROS
@@ -41,7 +41,9 @@ TL=torq/2*square(2*pi*t/periodo)+torq/2;%Funcion torque que varia entre 0 y 1.15
 
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
-Q=diag([1 1/700 1/5000]); R=1;
+% eig(A) podÃ©s partir de los autovalores de A, y luego ir cambiando de a poco los exponentes
+Q=diag([1 1/1.5e-1 1/1.5e2]); R=1;
+%Q=diag([1 1/700 1/5000]); R=1;
 
 H=[A -B*inv(R)*B' ; -Q -A'];
 [V,D]=eig(H);  %columnas de vects: autovectores
@@ -99,7 +101,7 @@ hold on; grid on;
 plot(Ref);title('Referencia de Entrada');xlabel('tiempo[s]');ylabel('angulo');
 subplot(2,1,2)
 hold on;grid on;
-plot(TL);title('Torque de perturbación');xlabel('Tiempo');ylabel('Torque');
+plot(TL);title('Torque de perturbaciÃ³n');xlabel('Tiempo');ylabel('Torque');
 
 figure
 grid on
