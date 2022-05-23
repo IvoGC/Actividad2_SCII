@@ -1,9 +1,9 @@
 clc; clear ; close all
 %{
 ---------------------------------------------------------------------------
-Considerar que no puede medirse la corriente y sólo pueda medirse el ángulo, por lo 
-que debe implementarse un observador. Obtener la simulación en las mismas condiciones que en 
-el punto anterior, y superponer las gráficas para comparar.
+Considerar que no puede medirse la corriente y s�lo pueda medirse el �ngulo, por lo 
+que debe implementarse un observador. Obtener la simulaci�n en las mismas condiciones que en 
+el punto anterior, y superponer las gr�ficas para comparar.
 ---------------------------------------------------------------------------
 %}
 %este es el sistema con las 3 variables de estado calculadas con el sistema
@@ -32,16 +32,17 @@ Co=B';
 
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
-Q=diag([1 1 1 1]); R=1;
+Q=diag([1 1/80000 1/20000 100000]); R=0.01;
 K4=lqr(An,Bn,Q,R);
 K=K4(1:3);
-K_i=K4(4);
-Qo=diag([1 1 1]); Ro=1;
+K_i=-K4(4);
+
+Qo=diag([1 1 1/1000]); Ro=1;
 Ko=lqr(Ao,Bo,Qo,Ro);
 
 
 %implementacion de funciones a usar
-tf=5; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
+tf=1.3; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
 torq=1.15*10^-3;
 
 Ref=pi/2*square(2*pi*t/periodo);%funcion de referencia que varia entre pi/2 y -pi/2
@@ -58,7 +59,7 @@ Xhat=zeros(3,n);
 Xhat(1,1)=0; %ia_hat inicial
 Xhat(2,1)=0; %tita_hat inicial
 Xhat(3,1)=0; %wr_hat inicial
-
+Up(1)=0;
 %DEFINO CONDICIONES INICIALES
 
 for i=1:1:n-1
@@ -69,8 +70,8 @@ for i=1:1:n-1
     psi_p=Ref(i)-Y;
     psi(i+1)=psi(i)+psi_p*dt;
     U=-K(2:3)*X_a(2:3)+K(1)*Xhat_a(1)+K_i*psi(i+1);% U estimando parametros
-    U=-K*Xhat_a+K_i*psi(i+1); % U con las 3 variables de estado estimadas
-    
+    %U=-K*Xhat_a+K_i*psi(i+1); % U con las 3 variables de estado estimadas
+    Up=[Up U];
     
     Xp_1=-RA/LAA*X_a(1)-Km/LAA*X_a(3)+1/LAA*U;  %ia_p
     Xp_2= X_a(3);                               %tita_p
@@ -92,29 +93,13 @@ for i=1:1:n-1
     Xhat(3,i+1)=Xhatf(3);
     
 end
-%ploteo de entrada con ganancia de prealimentacion U  y perturbacion TL
-% figure
-% subplot(2,1,1)
-% hold on; grid on;
-% plot(Ref);title('Referencia de Entrada');xlabel('tiempo[s]');ylabel('angulo');
-% subplot(2,1,2)
-% hold on;grid on;
-% plot(TL);title('Torque de perturbación');xlabel('Tiempo');ylabel('Torque');
-
-
 figure
-plot(t,psi);
-% 
-% figure
-% plot(t,Ref);
-% grid on
-% hold on
-% 
-% plot(t,X(2,:));title('angulo tita con observador e integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','var de estado')
-
-
-
-
-
-
-
+subplot(2,1,1);
+plot(t,Ref);
+grid on
+hold on
+plot(t,X(2,:),'r');title('angulo tita sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','tita')
+subplot(2,1,2);
+grid on
+hold on
+plot(t,X(1,:),'r');title('corriente ia observada y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('Ia')
