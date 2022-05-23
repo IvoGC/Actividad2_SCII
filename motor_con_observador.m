@@ -1,9 +1,9 @@
 clc; clear ; close all
 %{
 ---------------------------------------------------------------------------
-Considerar que no puede medirse la corriente y sólo pueda medirse el ángulo, por lo 
-que debe implementarse un observador. Obtener la simulación en las mismas condiciones que en 
-el punto anterior, y superponer las gráficas para comparar.
+Considerar que no puede medirse la corriente y sÃ³lo pueda medirse el Ã¡ngulo, por lo 
+que debe implementarse un observador. Obtener la simulaciÃ³n en las mismas condiciones que en 
+el punto anterior, y superponer las grÃ¡ficas para comparar.
 ---------------------------------------------------------------------------
 %}
 %este es el sistema con las 3 variables de estado calculadas con el sistema
@@ -84,7 +84,7 @@ for i=1:1:n-1
     X(3,i+1)=Xf(3);
     %Observador
     err=(Y-Yhat);
-    Xhat_p=U*Bo+Ko*err+Ao*Xhat_a;
+    Xhat_p=U*B+Ko'*err+A*Xhat_a;
     Xhatf=Xhat_a + dt*Xhat_p;
     
     Xhat(1,i+1)=Xhatf(1);
@@ -99,7 +99,7 @@ end
 % plot(Ref);title('Referencia de Entrada');xlabel('tiempo[s]');ylabel('angulo');
 % subplot(2,1,2)
 % hold on;grid on;
-% plot(TL);title('Torque de perturbación');xlabel('Tiempo');ylabel('Torque');
+% plot(TL);title('Torque de perturbaciÃ³n');xlabel('Tiempo');ylabel('Torque');
 
 
 figure
