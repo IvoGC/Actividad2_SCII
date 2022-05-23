@@ -1,11 +1,11 @@
 clc; clear ; close all
 %{
 ---------------------------------------------------------------------------
-Implementar un sistema en variables de estado que controle el Ã¡ngulo del 
-motor, para consignas de pi/2 y â€“pi/2 cambiando cada 300 mili segundos y 
-que el TL de 1,15 10-3 aparece sÃ³lo para pi/2, para â€“pi/2 es nulo. 
-Hallar el valor de integraciÃ³n Euler adecuado. El objetivo es mejorar 
-la dinÃ¡mica del controlador que muestra la Fig. 1. 
+Implementar un sistema en variables de estado que controle el ángulo del 
+motor, para consignas de pi/2 y –pi/2 cambiando cada 300 mili segundos y 
+que el TL de 1,15 10-3 aparece sólo para pi/2, para –pi/2 es nulo. 
+Hallar el valor de integración Euler adecuado. El objetivo es mejorar 
+la dinámica del controlador que muestra la Fig. 1. 
 ---------------------------------------------------------------------------
 %}
 %DEFINO PARAMETROS
@@ -41,10 +41,8 @@ TL=torq/2*square(2*pi*t/periodo)+torq/2;%Funcion torque que varia entre 0 y 1.15
 
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
-% eig(A) podÃ©s partir de los autovalores de A, y luego ir cambiando de a poco los exponentes
+%Q=diag([1/10000 1/7000000000 1/50]); R=1;
 Q=diag([1 1/1.5e-1 1/1.5e2]); R=1;
-%Q=diag([1 1/700 1/5000]); R=1;
-
 H=[A -B*inv(R)*B' ; -Q -A'];
 [V,D]=eig(H);  %columnas de vects: autovectores
 %Debo extraer solo los autovectores cuyos autovalores son negativos:
@@ -84,7 +82,7 @@ for i=1:1:n-1
     
     Xp_1=-RA/LAA*X_a(1)-Km/LAA*X_a(3)+1/LAA*U;  %ia_p
     Xp_2= X_a(3);                               %tita_p
-    Xp_3=Ki/J*X_a(1)-Bm/J*X_a(3); %-1/J*TL(i); (pruebo sin torque)    %W_p
+    Xp_3=Ki/J*X_a(1)-Bm/J*X_a(3)-1/J*TL(i);%    %W_p
     
     Xp_a=[Xp_1 ; Xp_2 ; Xp_3];
     
@@ -98,18 +96,18 @@ end
 figure
 subplot(2,1,1)
 hold on; grid on;
-plot(Ref);title('Referencia de Entrada');xlabel('tiempo[s]');ylabel('angulo');
+plot(t,Ref);title('Referencia de Entrada');xlabel('tiempo[s]');ylabel('angulo');
 subplot(2,1,2)
 hold on;grid on;
-plot(TL);title('Torque de perturbaciÃ³n');xlabel('Tiempo');ylabel('Torque');
+plot(t,TL);title('Torque de perturbación');xlabel('Tiempo');ylabel('Torque');
 
 figure
+
+
+plot(t,Ref);
 grid on
-% plot(Ref);
-% hold on
-
-plot(t,X(2,:));title('angulo tita sin observador');xlabel('tiempo[s]');ylabel('angulo[rad]');%legend('ref','var de estado')
-
+hold on
+plot(t,X(1,:));title('angulo tita sin observador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('ref','var de estado')
 
 
 

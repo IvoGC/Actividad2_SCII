@@ -130,12 +130,13 @@ figure
 subplot(2,1,1);
 plot(t,Ref);
 grid on
+plot(t,Xcom(2,:),'g');title('angulo tita sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
 hold on
-plot(t,X(2,:),'r');title('angulo tita sin observador pero con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','var de estado')
+plot(t,X(2,:),'r');title('angulo tita observado vs orginial y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('tita original','tita observado')
 subplot(2,1,2);
-plot(t,Ref);
 grid on
+plot(t,Xcom(1,:),'g');title('corriente ia sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
 hold on
-plot(t,X(1,:),'r');title('corriente ia sin observador pero con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','var de estado')
+plot(t,X(1,:),'r');title('corriente ia observada vs original con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('Ia original','Ia observada')
 
 
