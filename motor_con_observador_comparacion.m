@@ -41,7 +41,7 @@ K_i=-K4(4);
 
 
 Qo=diag([1 1 1/1000]); Ro=1;
-Ko=lqr(Ao,Bo,Qo,Ro)
+Ko=lqr(Ao,Bo,Qo,Ro);
 %Ko=1e4*[-0.0001 0.7639 3.1623];
 
 
@@ -99,7 +99,7 @@ for i=1:1:n-1
     X(3,i+1)=Xf(3);
     %Observador
     
-    Xhat_p=U_a*Bo+Ko'*err+A*Xhat_a;
+    Xhat_p=U_a*B+Ko'*err+A*Xhat_a;
     Xhatf=Xhat_a + dt*Xhat_p;
     Xhat(1,i+1)=Xhatf(1);
     Xhat(2,i+1)=Xhatf(2);
@@ -128,10 +128,10 @@ end
 
 figure
 subplot(2,1,1);
-plot(t,Ref);
+plot(t,Ref,'k');
+hold on
 grid on
 plot(t,Xcom(2,:),'g');title('angulo tita sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
-hold on
 plot(t,X(2,:),'r');title('angulo tita observado vs orginial y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('tita original','tita observado')
 subplot(2,1,2);
 grid on
