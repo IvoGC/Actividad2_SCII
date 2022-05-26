@@ -1,12 +1,15 @@
 clc; clear ; close all
 %{
 ---------------------------------------------------------------------------
-Calcular un controlador que haga evolucionar al péndulo en el equilibrio inestable, 
-partiendo de una condición inicial nula en el desplazamiento y termine en 10 metros manteniendo la 
-vertical. Determinar el ángulo máximo que puede alejarse de la vertical en t=0 para que el sistema 
-cumpla el objetivo de control. 
+Incorporar un observador para el caso en que sólo pueda medirse el 
+desplazamiento delta, repetir las simulaciones para las condiciones anteriores 
+y graficar los resultados en gráficas superpuestas.
 ---------------------------------------------------------------------------
 %}
+%En este caso vamos usar el caso sin integrador ya que tiene mejor
+%respuesta que el caso con el integrador y no es necesario el mismo. 
+%vamos a generar el sistema con observador y un sistema de comparacion para
+%poder plotearlo en simultaneo
 %DEFINO PARAMETROS
 m = 0.1; F = 0.1; l = 0.6; g = 9.8; M = 0.5; 
 
@@ -44,14 +47,36 @@ X(2,1)=X_in(2);   %delta_p  inicial
 X(3,1)=X_in(3);   %phi      inicial
 X(4,1)=X_in(4);   %phi_p    inicial
 
+Xhat=zeros(4,n);
+Xhat_in=[0 0 0 0]; %[deltahat deltahat_p phihat phihat_p] 
+Xhat(1,1)=Xhat_in(1);   %deltahat       inicial
+Xhat(2,1)=Xhat_in(2);   %deltahat_p     inicial
+Xhat(3,1)=Xhat_in(3);   %phihat         inicial
+Xhat(4,1)=Xhat_in(4);   %phihat_p       inicial
+
+
+Xc_in=[d_i 0 0 phi_i]; %[deltac deltac_p phic phic_p] 
+Xc(1,1)=Xc_in(1);   %deltac     inicial
+Xc(2,1)=Xc_in(2);   %deltac_p   inicial
+Xc(3,1)=Xc_in(3);   %phic       inicial
+Xc(4,1)=Xc_in(4);   %phic_p     inicial
+
+
 U(1)=0;
+Uc(1)=0;
 Ref=referencia*ones(1,n);% posicion de referencia a la cual se pretende llegar 
 
 for i=1:1:n-1
-    X_a=X(:,i);%[delta ; delta_p ; phi ; phi_p ]
-    Ua=-K*X_a+Ref(i)*G;
-    U=[U Ua];
+    X_a=X(:,i);         %[delta ; delta_p ; phi ; phi_p ]
+    Xhat_a=Xhat(:,i);   %[deltahat deltahat_p phihat phihat_p] 
+    Y=X_a*C;
+    Yhat=Xhat_a*C;
+    err=Y-Yhat;
     
+    %Ua=-K*X_a+Ref(i)*G;             %U del sistema normal
+    %Ua=-K*Xhat_a+Ref(i)*G;          %U del sistema observado
+    Ua=-K(2:4)*Xhat_a(2:4)-K(1)*X_a(1)+Ref(i)*G;%U para el sistema mixto
+    U=[U Ua];
     Xp_a=A*X_a+B*Ua;
     Xf= X_a+ dt*Xp_a; % Realizamos la integracion de euler y actualizamos matriz X
     X(:,i+1)=Xf;
@@ -76,4 +101,3 @@ legend('angulo')
 figure
 
 plot(t,U,'b');title('accion de control');
-

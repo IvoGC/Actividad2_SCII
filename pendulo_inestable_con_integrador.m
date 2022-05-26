@@ -7,6 +7,7 @@ vertical. Determinar el ángulo máximo que puede alejarse de la vertical en t=0 p
 cumpla el objetivo de control. 
 ---------------------------------------------------------------------------
 %}
+%en este caso con integrador
 %DEFINO PARAMETROS
 m = 0.1; F = 0.1; l = 0.6; g = 9.8; M = 0.5; 
 
@@ -18,20 +19,26 @@ A = [0,1,0,0 ; 0,(-F/M),(-m*g/M),0 ; 0,0,0,1 ; 0,(F/(l*M)),(((M+m)*g)/(l*M)),0 ]
 B = [0 ; (1/M) ; 0 ; (-1/(l*M))];
 C = [1,0,0,0];
 D = 0;
+%Matrices extendidas para el integrador
+An=[A zeros(4,1); -C 0];
+Bn=[B ; 0];
+Cn=[1 0];
+
 
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
-Q=diag([1 1/80000 1/500 1/100]); R=0.01;
+Q=diag([1/50 1/8000 1/500 1/1000 1]); R=0.01;
 %Q=diag([1 1 1 1]); R=1;
-K=lqr(A,B,Q,R);
-eig(A-K*B) % p1=-42.1578; p2=-73711; p3=-0.5225; p4=1.7517; (polos de controlador)
+K5=lqr(An,Bn,Q,R);
+K=K5(1:4)
+Ki=-K5(5)
+eig(A-K*B); 
 
-%Ganancia de prealimentacion
-G=-inv(C*inv(A-B*K)*B);
+
 
 %integracion
 
-tf=5; dt=1*10^-3; t=0:dt:(tf-dt); 
+tf=10; dt=1*10^-3; t=0:dt:(tf-dt); 
 d_i=0;          %posicion delta inicial
 phi_i=0.03;        %angulo   phi   inicial
 referencia=10;  %posicion delta de referencia
@@ -43,13 +50,16 @@ X(1,1)=X_in(1);   %delta    inicial
 X(2,1)=X_in(2);   %delta_p  inicial
 X(3,1)=X_in(3);   %phi      inicial
 X(4,1)=X_in(4);   %phi_p    inicial
+psi(1)=0;         %psi      inicial
 
 U(1)=0;
 Ref=referencia*ones(1,n);% posicion de referencia a la cual se pretende llegar 
 
 for i=1:1:n-1
     X_a=X(:,i);%[delta ; delta_p ; phi ; phi_p ]
-    Ua=-K*X_a+Ref(i)*G;
+    psi_p=Ref(i)-C*X_a;
+    psi(i+1)=psi(i)+dt*psi_p;
+    Ua=-K*X_a+Ki*psi(i+1);
     U=[U Ua];
     
     Xp_a=A*X_a+B*Ua;
