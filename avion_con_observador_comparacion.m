@@ -95,9 +95,11 @@ for i=1:1:n-1
     Y=C*X_a;
     Yhat=C*Xhat_a;
     err=Y-Yhat;
-    U=-K(1:3)*Xhat_a(1:3)-K(4)*X_a(4)+Ref(i)*G;
+    %U=-K(1:3)*Xhat_a(1:3)-K(4)*X_a(4)+Ref(i)*G;
     %entrada U estimando otros parametros y midiendo altura
     %U=-K*Xhat_a+Ref(i)*G;
+    U=-K(1:3)*Xhat_a(1:3)-K(4)*X_a(4)+Ref(i)*G;
+    
     %entrada U estimando los 3 parametros
     Ua=[Ua U];
     

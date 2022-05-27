@@ -35,7 +35,6 @@ Co=B';
 Q=diag([1 1/800000 1/9000000 10000]); R=0.01;
 K4=lqr(An,Bn,Q,R);
 K=K4(1:3);
-
 K_i=-K4(4);
 
 
@@ -132,11 +131,13 @@ plot(t,Ref,'k');
 hold on
 grid on
 plot(t,Xcom(2,:),'g');title('angulo tita sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
-plot(t,X(2,:),'r');title('angulo tita observado vs orginial y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('tita original','tita observado')
+plot(t,X(2,:),'r');title('angulo tita observado vs orginial y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
+legend('Referencia','tita original','tita observado');
 subplot(2,1,2);
 grid on
 plot(t,Xcom(1,:),'g');title('corriente ia sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
 hold on
-plot(t,X(1,:),'r');title('corriente ia observada vs original con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('Ia original','Ia observada')
+plot(t,X(1,:),'r');title('corriente ia observada vs original con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');
+legend('Ia original','Ia observada')
 
 

@@ -19,7 +19,7 @@ D = 0;
 
 %comprobamos CONTROLABILIDAD del sistema
 M_controlable=[B A*B A*A*B A*A*A*B];
-rank(M_controlable)
+rank(M_controlable)% nos da 4 por lo tanto es controlable
 
 %CALCULO DEL CONTROLADOR K
 %en este caso tenemos el valor de los polos deseados y en base a esto
@@ -53,6 +53,7 @@ G=-inv(C*inv(A-B*K)*B);
 
 %simulacion Para altura inicial 
 tf=70; dt=1*10^-3; t=0:dt:(tf-dt); 
+h_ref=4000;     %altura de referencia
 h_o=-500;       %Altura inicial
 referencia=100; %Valor de establecimiento
 n=round(tf/dt);
@@ -82,10 +83,10 @@ for i=1:1:n-1
 end
 figure
 subplot(2,2,1);
-plot(t,Ref,'b');
+plot(t,Ref+h_ref,'b');
 grid on
 hold on
-plot(t,X(4,:),'g');title('altura h con h_o=-500 y ref=100');xlabel('tiempo[s]');ylabel('posicion[m]');legend('Referencia','altura')
+plot(t,X(4,:)+h_ref,'g');title('altura h con h_o=-500 y ref=100');xlabel('tiempo[s]');ylabel('posicion[m]');legend('Referencia','altura')
 subplot(2,2,3);
 grid on
 hold on
@@ -93,8 +94,9 @@ plot(t,Ua1,'r');title('accion de control caso 1')
 
 
 %Simulamos el otro caso que tiene referencia de -100 y arranca en 500
-h_o=500;       %Altura inicial
-referencia=-100; %Valor de establecimiento
+h_ref=4000;         %atura de referencia
+h_o=500;            %Altura inicial
+referencia=-100;    %Valor de establecimiento
 n=round(tf/dt);
 X=zeros(4,n);
 X_inicial=[0 0 0 h_o]; %[alfa phi phi_p h] ho=4000
@@ -122,10 +124,10 @@ for i=1:1:n-1
 end
 
 subplot(2,2,2);
-plot(t,Ref,'b');
+plot(t,Ref+h_ref,'b');
 grid on
 hold on
-plot(t,X(4,:),'g');title('altura h con h_o=500 y ref=-100');xlabel('tiempo[s]');ylabel('posicion[m]');legend('Referencia','altura')
+plot(t,X(4,:)+h_ref,'g');title('altura h con h_o=500 y ref=-100');xlabel('tiempo[s]');ylabel('posicion[m]');legend('Referencia','altura')
 subplot(2,2,4);
 grid on
 hold on

@@ -89,12 +89,14 @@ subplot(2,1,1);
 plot(t,Ref);
 grid on
 hold on
-plot(t,X(2,:));title('angulo tita sin observador pero con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','var de estado')
+plot(t,X(2,:),'r');title('angulo tita con integrador y sin observador ');xlabel('tiempo[s]');ylabel('angulo[rad]');
+legend('REF','var de estado')
 subplot(2,1,2);
-plot(t,Ref);
+%plot(t,Ref);
 grid on
 hold on
-plot(t,X(1,:));title('corriente ia sin observador pero con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','var de estado')
+plot(t,X(1,:),'r');title('corriente i_a con integrador y sin observador ');xlabel('tiempo[s]');ylabel('angulo[rad]');
+legend('var de estado')
 
 
 

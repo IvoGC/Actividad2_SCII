@@ -28,7 +28,8 @@ Cn=[1 0];
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
 Q=diag([1/50 1/8000 1/500 1/1000 1]); R=0.01;
-%Q=diag([1 1 1 1]); R=1;
+Q=diag([1/300 1/80000 1/5000 1/100 1]); R=0.01;
+
 K5=lqr(An,Bn,Q,R);
 K=K5(1:4)
 Ki=-K5(5)
@@ -38,7 +39,7 @@ eig(A-K*B);
 
 %integracion
 
-tf=10; dt=1*10^-3; t=0:dt:(tf-dt); 
+tf=30; dt=1*10^-3; t=0:dt:(tf-dt); 
 d_i=0;          %posicion delta inicial
 phi_i=0.03;        %angulo   phi   inicial
 referencia=10;  %posicion delta de referencia

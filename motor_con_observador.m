@@ -42,7 +42,7 @@ Ko=lqr(Ao,Bo,Qo,Ro);
 
 
 %implementacion de funciones a usar
-tf=1.3; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
+tf=2; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
 torq=1.15*10^-3;
 
 Ref=pi/2*square(2*pi*t/periodo);%funcion de referencia que varia entre pi/2 y -pi/2
@@ -98,7 +98,7 @@ subplot(2,1,1);
 plot(t,Ref);
 grid on
 hold on
-plot(t,X(2,:),'r');title('angulo tita sin observador y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','tita')
+plot(t,X(2,:),'r');title('angulo tita observado y con integrador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('REF','tita')
 subplot(2,1,2);
 grid on
 hold on

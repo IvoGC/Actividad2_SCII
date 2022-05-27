@@ -42,7 +42,7 @@ TL=torq/2*square(2*pi*t/periodo)+torq/2;%Funcion torque que varia entre 0 y 1.15
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
 %Q=diag([1/10000 1/7000000000 1/50]); R=1;
-Q=diag([1 1/1.5e-1 1/1.5e2]); R=0.01;
+Q=diag([1 10/1.5e-1 1/1.5e2]); R=0.01;
 H=[A -B*inv(R)*B' ; -Q -A'];
 [V,D]=eig(H);  %columnas de vects: autovectores
 %Debo extraer solo los autovectores cuyos autovalores son negativos:

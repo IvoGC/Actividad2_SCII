@@ -19,9 +19,15 @@ B = [0 ; (1/M) ; 0 ; (-1/(l*M))];
 C = [1,0,0,0];
 D = 0;
 
+%comprobamos CONTROLABILIDAD del sistema
+M_controlable=[B A*B A*A*B A*A*A*B];
+rank(M_controlable)% nos da 4 por lo tanto es controlable
+
+
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
-Q=diag([1 1/80000 1/500 1/100]); R=0.01;
+%Q=diag([1/8000 1/80000 1/5000 1/100]); R=0.01; %primer caso
+Q=diag([1/300 1/80000 1/5000 1/100]); R=0.01; %segundo caso
 %Q=diag([1 1 1 1]); R=1;
 K=lqr(A,B,Q,R);
 eig(A-K*B) % p1=-42.1578; p2=-73711; p3=-0.5225; p4=1.7517; (polos de controlador)
@@ -31,9 +37,9 @@ G=-inv(C*inv(A-B*K)*B);
 
 %integracion
 
-tf=5; dt=1*10^-3; t=0:dt:(tf-dt); 
+tf=30; dt=1*10^-3; t=0:dt:(tf-dt); 
 d_i=0;          %posicion delta inicial
-phi_i=0.03;        %angulo   phi   inicial
+phi_i=00;        %angulo   phi   inicial
 referencia=10;  %posicion delta de referencia
 %iteracion
 n=round(tf/dt);
