@@ -30,7 +30,7 @@ rank(M_controlable);%me devuelve un estimado del numero de columnas o filas
 %decir que el sistema es controlable
 
 %implementacion de funciones a usar
-tf=2; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
+tf=1.5; dt=1*10^-5; t=0:dt:(tf-dt); periodo=0.6;%[seg]
 torq=1.15*10^-3;
 
 Ref=pi/2*square(2*pi*t/periodo);%funcion de referencia que varia entre pi/2 y -pi/2
@@ -42,7 +42,7 @@ TL=torq/2*square(2*pi*t/periodo)+torq/2;%Funcion torque que varia entre 0 y 1.15
 %CALCULO DEL CONTROLADOR K
 %para el calculo del mismo se utiliza el metodo LQR para lo cual definimos
 %Q=diag([1/10000 1/7000000000 1/50]); R=1;
-Q=diag([1 1/1.5e-1 1/1.5e2]); R=1;
+Q=diag([1 1/1.5e-1 1/1.5e2]); R=0.01;
 H=[A -B*inv(R)*B' ; -Q -A'];
 [V,D]=eig(H);  %columnas de vects: autovectores
 %Debo extraer solo los autovectores cuyos autovalores son negativos:
@@ -91,6 +91,8 @@ for i=1:1:n-1
     X(1,i+1)=Xf(1);
     X(2,i+1)=Xf(2);
     X(3,i+1)=Xf(3);
+    
+    %X(:,i+1)=Xf;
 end
 %ploteo de entrada con ganancia de prealimentacion U  y perturbacion TL
 figure
@@ -103,12 +105,12 @@ plot(t,TL);title('Torque de perturbación');xlabel('Tiempo');ylabel('Torque');
 
 figure
 
-
+subplot(2,1,1)
 plot(t,Ref);
 grid on
 hold on
-plot(t,X(1,:));title('angulo tita sin observador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('ref','var de estado')
-
-
+plot(t,X(2,:),'r');title('angulo tita sin observador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('ref','var de estado')
+subplot(2,1,2)
+plot(t,X(1,:),'r');title('corriente sin observador');xlabel('tiempo[s]');ylabel('angulo[rad]');legend('var de estado')
 
 
